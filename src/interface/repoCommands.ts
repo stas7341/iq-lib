@@ -33,8 +33,6 @@ export interface IRepoCommands {
 
     addFieldsToHash(...[key, value, fieldValue]: SingleFieldArguments | MultipleFieldsArguments): Promise<number>;
 
-    addFieldToHashIfNotExist(key: RepoCommandArgument, value: RepoCommandArgument, fieldValue: RepoCommandArgument): Promise<boolean>;
-
     removeFieldFromHash(key: RepoCommandArgument, field: RepoCommandArgument | Array<RepoCommandArgument>): Promise<number>;
 
     isFieldExistInHash(key: RepoCommandArgument, field: RepoCommandArgument): Promise<boolean>;
@@ -44,10 +42,6 @@ export interface IRepoCommands {
     getFieldsFromHash(key: RepoCommandArgument, fields: RepoCommandArgument | Array<RepoCommandArgument>): Promise<RepoCommandArgument[]>
 
     getAllFieldsFromHash(key: RepoCommandArgument): Promise<{ [p: string]: RepoCommandArgument}>
-
-    incFieldInHash(key: RepoCommandArgument, field: RepoCommandArgument, increment: number): Promise<number>;
-
-    incFloatFieldInHash(key: RepoCommandArgument, field: RepoCommandArgument, increment: number): Promise<number>;
 
     getFieldNamesFromHash(key: RepoCommandArgument): Promise<RepoCommandArgument[]>;
 
