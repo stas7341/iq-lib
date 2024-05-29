@@ -18,3 +18,74 @@ of recovery the application will moved this group to pending queue
 2.8 on request of transaction completed the IQ mng will delete permanently all messages in pending group
 2.9 scheduler service of application will check all pending group for expiry time
  */
+
+import {amqpService, redisService} from "service-libs";
+import {createIQManager} from "../index";
+import {
+    IRepoCommands,
+    MultipleFieldsArguments,
+    RepoCommandArgument,
+    SingleFieldArguments
+} from "../interface/repoCommands";
+
+const main = async() => {
+
+    const redis = redisService.getInstance();
+    const amqp = amqpService.getInstance();
+    await amqp.init({
+        username: 'guest', password: 'guest', host: 'localhost', prefetch: 1, options_durable: true, options_noAck: false
+    });
+    await redis.init({
+        user: "default", password: "r3d1s!", host: "127.0.0.1", port: 6379, connect_timeout: 300, enable_offline_queue: false, retry_strategy: true
+    });
+
+    const repo = createRepo("redis", redis);
+
+    const iqMng = createIQManager({repoClient: repo});
+}
+
+function createRepo(type, instance): IRepoCommands {
+    class repoRedis implements IRepoCommands {
+        async addItem(key: RepoCommandArgument, value: RepoCommandArgument): Promise<boolean> {return instance.addItem(key, value)}
+        async getItem(key: RepoCommandArgument): Promise<RepoCommandArgument | null> {return instance.getItem(key)}
+        async deleteItem(key: RepoCommandArgument): Promise<boolean> {return instance.deleteItem(key)}
+        async searchKeys(pattern: RepoCommandArgument): Promise<RepoCommandArgument[]> {return instance.searchKeys(pattern)}
+        async isKeyExist(key: RepoCommandArgument): Promise<boolean> {return instance.isKeyExist(key)}
+        async popItemFromZQ(queueName: string, zpopmin?: boolean): Promise<{ score: number, value: RepoCommandArgument } | null> {
+            return instance.popItemFromZQ(queueName, zpopmin);
+        }
+        async getAllItemsFromZQ(queueName: string): Promise<RepoCommandArgument[]> {return instance.getAllItemsFromZQ(queueName)}
+        async addItemToZQ(queueName: string, item: RepoCommandArgument | RepoCommandArgument[], priority?: number): Promise<boolean> {
+            return instance.addItemToZQ(queueName, item, priority);
+        }
+        async removeItemFromZQ(queueName: string, item: RepoCommandArgument): Promise<boolean> {return instance.removeItemFromZQ(queueName, item)}
+        async getZQLength(queueName: string): Promise<number> {return instance.getZQLength(queueName)}
+        async setExpiration(item: RepoCommandArgument, ttl: number, mode?: "NX" | "XX" | "GT" | "LT"): Promise<boolean> {
+            return instance.setExpiration(item, ttl, mode);
+        }
+        async addFieldsToHash(...[key, value, fieldValue]: SingleFieldArguments | MultipleFieldsArguments): Promise<number> {
+            return instance.addFieldsToHash(...[key, value, fieldValue]);
+        }
+        async removeFieldFromHash(key: RepoCommandArgument, field: RepoCommandArgument | Array<RepoCommandArgument>): Promise<number> {
+            return instance.removeFieldFromHash(key, field);
+        }
+        async isFieldExistInHash(key: RepoCommandArgument, field: RepoCommandArgument): Promise<boolean> {
+            return instance.isFieldExistInHash(key,field);
+        }
+        async getFieldFromHash(key: RepoCommandArgument, field: RepoCommandArgument): Promise<RepoCommandArgument | null> {
+            return instance.getFieldFromHash(key, field);
+        }
+        async getFieldsFromHash(key: RepoCommandArgument, fields: RepoCommandArgument | Array<RepoCommandArgument>): Promise<RepoCommandArgument[]> {
+            return instance.getFieldsFromHash(key, fields);
+        }
+        async getAllFieldsFromHash(key: RepoCommandArgument): Promise<{ [p: string]: RepoCommandArgument}> {
+            return instance.getAllFieldsFromHash(key);
+        }
+        async getFieldNamesFromHash(key: RepoCommandArgument): Promise<RepoCommandArgument[]> {return instance.getFieldNamesFromHash(key)}
+        async getNumberOfFieldsInHash(key: RepoCommandArgument): Promise<number> {return instance.getNumberOfFieldsInHash(key)}
+    }
+    return type === "redis" ? new repoRedis() : {} as IRepoCommands;
+}
+
+main().then(res => console.log('started'));
+
