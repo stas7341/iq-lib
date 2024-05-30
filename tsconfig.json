@@ -1,11 +1,11 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es2020",
-    "lib": [
-      "es2020"
-    ],
-    "module": "commonjs",
+    "target": "ES2015",
+    "module": "ES2020",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -13,23 +13,18 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "inlineSources": true,
-    "strict": true,
-    "esModuleInterop": true,
     "pretty": true,
     "resolveJsonModule": true,
-    "outDir": "dist",
+    "outDir": "lib/esm",
     "declaration": true,
-    "baseUrl": "."
+    "lib": ["es2017", "es7", "es6", "dom"]
   },
   "include": [
-    "lib/**/*.ts",
-    "index.ts",
-    "test/**/*.ts",
-    "test/**/*.json",
+    "./src",
     "jest.config.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "./lib"
   ]
 }

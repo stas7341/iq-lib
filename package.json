@@ -1,13 +1,24 @@
 {
-  "name": "iq-libs",
+  "name": "iqlib",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "The Israel Queue implementation",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/tests/app.js",
+    "debug": "tsc; NODE_ENV=debug DEBUG=* node dist/tests/app.js --unhandled-rejections=strict",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "load-modules": "rm -rf ./node_modules/service-libs; npm i --also-dev",
+    "dev": "NODE_ENV= LOAD_CONFIGS_DYNAMODB=false ts-node ./tests/app.ts",
+    "local_publish": "npm link",
+    "packaging": "npm run build && npm pack"
   },
   "keywords": [],
-  "author": "",
+  "author": "Stas M.",
   "license": "ISC",
   "dependencies": {
     "auto-version-js": "^0.3.10",

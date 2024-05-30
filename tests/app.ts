@@ -19,14 +19,14 @@ of recovery the application will moved this group to pending queue
 2.9 scheduler service of application will check all pending group for expiry time
  */
 
-import {amqpService, redisService} from "service-libs";
-import {createIQManager} from "../index";
+import {amqpService, Message, redisService} from "service-libs";
+import {createIQManager} from "../src";
 import {
     IRepoCommands,
     MultipleFieldsArguments,
     RepoCommandArgument,
     SingleFieldArguments
-} from "../interface/repoCommands";
+} from "../src/interface/repoCommands";
 
 const main = async() => {
 
@@ -42,6 +42,23 @@ const main = async() => {
     const repo = createRepo("redis", redis);
 
     const iqMng = createIQManager({repoClient: repo});
+
+    await iqMng.createQueue("test", ["/action","/payload/eventId"]);
+
+    await iqMng.addMessageToQueue("test", new Message('test1', {eventId: 12345}));
+    await iqMng.addMessageToQueue("test", new Message('test2', {eventId: 12345}));
+    await iqMng.addMessageToQueue("test", new Message('test1', {eventId: 12346}));
+    await iqMng.addMessageToQueue("test", new Message('test2', {eventId: 12345}));
+
+    const listGroups = await iqMng.getListGroupsFromQueue("test");
+    console.log(JSON.stringify(listGroups));
+    let listGroupMessages = await iqMng.getListMessagesFromGroup(listGroups[0]);
+    console.log(JSON.stringify(listGroupMessages));
+    const popupGroup = await iqMng.popupGroupFromQueue("test");
+    console.log(JSON.stringify(popupGroup));
+    listGroupMessages = await iqMng.getListMessagesFromGroup(listGroups[0]);
+    console.log(JSON.stringify(listGroupMessages));
+
 }
 
 function createRepo(type, instance): IRepoCommands {
