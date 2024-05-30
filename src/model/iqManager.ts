@@ -4,6 +4,7 @@ import {Message} from "service-libs";
 export class IQManager {
         protected repoClient: IRepoCommands | undefined;
         constructor(config: {repoClient: IRepoCommands}) {
+                this.repoClient = config.repoClient;
         }
 
         async createQueue(queueName: string, criteria: string[]) {
