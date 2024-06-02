@@ -5,11 +5,12 @@
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "types": "./lib/index.d.ts",
+  "type": "commonjs",
   "files": [
     "lib/"
   ],
   "scripts": {
-    "start": "node dist/tests/app.js",
+    "start": "ts-node ./tests/app.ts",
     "debug": "tsc; NODE_ENV=debug DEBUG=* node dist/tests/app.js --unhandled-rejections=strict",
     "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "load-modules": "rm -rf ./node_modules/service-libs; npm i --also-dev",
@@ -22,6 +23,8 @@
   "license": "ISC",
   "dependencies": {
     "auto-version-js": "^0.3.10",
-    "service-libs": "2.2.6"
+    "service-libs": "2.2.6",
+    "@types/node": "^20.12.12",
+    "ts-node": "^10.9.2"
   }
 }
