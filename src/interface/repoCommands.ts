@@ -1,10 +1,9 @@
 export type RepoCommandArgument = string | Buffer;
-
-type Types = RepoCommandArgument | number;
-type HSETObject = Record<string | number, Types>;
-type HSETMap = Map<Types, Types>;
-type HSETTuples = Array<[Types, Types]> | Array<Types>;
-type GenericArguments = [key: RepoCommandArgument];
+export type Types = RepoCommandArgument | number;
+export type HSETObject = Record<string | number, Types>;
+export type HSETMap = Map<Types, Types>;
+export type HSETTuples = Array<[Types, Types]> | Array<Types>;
+export type GenericArguments = [key: RepoCommandArgument];
 export type SingleFieldArguments = [...generic: GenericArguments, field: Types, value: Types];
 export type MultipleFieldsArguments = [...generic: GenericArguments, value: HSETObject | HSETMap | HSETTuples];
 
