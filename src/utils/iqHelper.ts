@@ -1,16 +1,18 @@
 import {Message} from "service-libs";
 
+export const PREFIX = (item) => `iq:${item.toString()}`;
+
 export const buildGroupName = (message: Message, criteria: string []): string => {
-    let groupName = 'group';
+    let groupName = '';
     for (const path of criteria) {
         const valueByPath = getValueByPath(path, message);
         if (valueByPath?.length && valueByPath?.toLowerCase() !== '[object object]') {
             groupName += `:${path}:${valueByPath}`;
         }
     }
-    if(groupName.length === String('group').length)
+    if(groupName.length <= 1)
         throw new Error(`Message format does not meet criteria`)
-    return groupName;
+    return `${PREFIX('group')}${groupName}`;
 }
 
 export const getValueByPath = (key: string, val: object): any => {
