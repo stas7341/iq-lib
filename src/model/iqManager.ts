@@ -42,15 +42,16 @@ export class IQManager extends EventEmitter{
                 const groupName = buildGroupName(msg, criteria);
                 const fullQueueName = `${PREFIX('queue')}:${queueName}`;
                 // entering critical section of queueName
-                const isGroupExist = await this.repoClient.isKeyExist(groupName);
+                //const isGroupExist = await this.repoClient.isKeyExist(groupName);
                 await this.repoClient.addFieldsToHash(groupName, GUID(), JSON.stringify(msg));
+                const num = await this.repoClient.getNumberOfFieldsInHash(groupName);
                 await this.repoClient.setExpiration(groupName, this.ttl);
-                if(!isGroupExist) {
-                        await this.repoClient.addItemToZQ(fullQueueName, groupName);
+                //if(!isGroupExist) {
+                        await this.repoClient.addItemToZQ(fullQueueName, groupName, num);
                         await this.repoClient.setExpiration(fullQueueName, this.ttl);
-                }
+                //}
                 // end critical section of queueName
-                this.raiseEvent('queued', {queueName, groupName, isGroupExist});
+                this.raiseEvent('queued', {queueName, groupName, num});
         }
 
         async getListGroupsFromQueue(queueName: string) {
@@ -80,7 +81,7 @@ export class IQManager extends EventEmitter{
                 const fullQueueName = `${PREFIX('queue')}:${queueName}`;
                 this.log("popupGroupFromQueue", LogLevel.trace, queueName);
                 // entering critical section queueName
-                const groupName = await this.repoClient.popItemFromZQ(fullQueueName);
+                const groupName = await this.repoClient.popItemFromZQ(fullQueueName, false);
                 if(!groupName)
                         return;
                 const allMessages = await this.repoClient.getAllFieldsFromHash(groupName?.value);
