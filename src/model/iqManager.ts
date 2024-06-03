@@ -7,18 +7,22 @@ export class IQManager extends EventEmitter{
         private queues = new Map<string, string[]>();
         private repoClient: IRepoCommands;
         private readonly ttl: number;
-        constructor(config: {repoClient: IRepoCommands, ttl?: number}) {
+        private readonly asyncLog: boolean;
+        constructor(config: {repoClient: IRepoCommands, ttl?: number, asyncLog?: boolean}) {
                 super();
                 this.repoClient = config.repoClient;
                 config.ttl ? this.ttl = config.ttl : this.ttl = 3600;
+                config.asyncLog ? this.asyncLog = config.asyncLog : this.asyncLog = true;
         }
 
         private log = (text, level = LogLevel.trace, metadata?) => {
-                setTimeout(() => this.emit("log", text, level, metadata), 0);
+                this.asyncLog ?
+                        setTimeout(() => this.emit("log", text, level, metadata), 0) :
+                    this.emit("log", text, level, metadata);
         }
 
-        private raiseEvent = (event, metadata?) => {
-                setTimeout(() => this.emit(event, metadata), 0);
+        private raiseEvent = (eventName, metadata?) => {
+                setTimeout(() => this.emit(eventName, metadata), 0);
         }
 
         async createQueue(queueName: string, criteria: string[]) {
@@ -42,14 +46,11 @@ export class IQManager extends EventEmitter{
                 const groupName = buildGroupName(msg, criteria);
                 const fullQueueName = `${PREFIX('queue')}:${queueName}`;
                 // entering critical section of queueName
-                //const isGroupExist = await this.repoClient.isKeyExist(groupName);
                 await this.repoClient.addFieldsToHash(groupName, GUID(), JSON.stringify(msg));
                 const num = await this.repoClient.getNumberOfFieldsInHash(groupName);
                 await this.repoClient.setExpiration(groupName, this.ttl);
-                //if(!isGroupExist) {
-                        await this.repoClient.addItemToZQ(fullQueueName, groupName, num);
-                        await this.repoClient.setExpiration(fullQueueName, this.ttl);
-                //}
+                await this.repoClient.addItemToZQ(fullQueueName, groupName, num);
+                await this.repoClient.setExpiration(fullQueueName, this.ttl);
                 // end critical section of queueName
                 this.raiseEvent('queued', {queueName, groupName, num});
         }
@@ -92,9 +93,9 @@ export class IQManager extends EventEmitter{
 
 }
 
-export function createIQManager(options:{repoClient: IRepoCommands, ttl?: number}): IQManager {
+export function createIQManager(options:{repoClient: IRepoCommands, ttl?: number, asyncLog?: boolean}): IQManager {
         if(!options?.repoClient)
                 throw new Error(`repoClient parameter mandatory`);
 
-        return new IQManager({repoClient: options.repoClient, ttl: options.ttl});
+        return new IQManager({repoClient: options.repoClient, ttl: options.ttl, asyncLog: options.asyncLog});
 }
