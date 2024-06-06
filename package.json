@@ -1,30 +1,54 @@
 {
-  "name": "iqlib",
-  "version": "1.0.0",
-  "description": "The Israel Queue implementation",
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
-  "types": "./lib/index.d.ts",
-  "type": "commonjs",
-  "files": [
-    "lib/"
-  ],
-  "scripts": {
-    "start": "ts-node ./tests/app.ts",
-    "debug": "tsc; NODE_ENV=debug DEBUG=* node dist/tests/app.js --unhandled-rejections=strict",
-    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
-    "load-modules": "rm -rf ./node_modules/service-libs; npm i --also-dev",
-    "dev": "NODE_ENV= LOAD_CONFIGS_DYNAMODB=false ts-node ./tests/app.ts",
-    "local_publish": "npm link",
-    "packaging": "npm run build && npm pack"
-  },
-  "keywords": [],
+  "name": "@asmtechno/iqlib",
   "author": "Stas M.",
   "license": "ISC",
+  "version": "1.0.2",
+  "description": "The Israel Queue implementation",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "src": "src"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "load-modules": "npm i --also-dev",
+    "npm_login": "npm login --scope=@asmtechno --auth-type=legacy --registry=\"https://registry.npmjs.org\"",
+    "publis_access": "npm publish --scope=@asmtechno --auth-type=legacy --access public --registry=\"https://registry.npmjs.org\"",
+    "packaging": "npm run build && npm pack",
+    "local_publish": "npm link"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "dependencies": {
-    "auto-version-js": "^0.3.10",
-    "service-libs": "2.2.6",
+    "auto-version-js": "^0.3.10"
+  },
+  "peerDependencies": {
+    "@asmtechno/service-lib": "^1.0.9"
+  },
+  "devDependencies": {
     "@types/node": "^20.12.12",
     "ts-node": "^10.9.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stas7341/iq-lib.git"
+  },
+  "keywords": [
+    "IsraelQueue",
+    "microservices",
+    "redis",
+    "logging",
+    "helper"
+  ],
+  "bugs": {
+    "url": "https://github.com/stas7341/iq-lib.git/issues"
+  },
+  "homepage": "https://github.com/stas7341/iq-lib#readme"
 }

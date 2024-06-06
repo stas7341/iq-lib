@@ -1,5 +1,5 @@
-import {IRepoCommands, RepoCommandArgument} from "../interface/repoCommands";
-import {LogLevel, Message} from "service-libs";
+import {IRepoCommands} from "../interface/repoCommands";
+import {LogLevel, Message} from "@asmtechno/service-lib";
 import EventEmitter from "node:events";
 import {buildGroupName, GUID, PREFIX} from "../utils/iqHelper";
 
