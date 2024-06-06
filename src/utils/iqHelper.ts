@@ -1,4 +1,4 @@
-import {Message} from "service-libs";
+import {Message} from "@asmtechno/service-lib";
 
 export const PREFIX = (item) => `iq:${item.toString()}`;
 
