@@ -4,7 +4,6 @@
   "license": "ISC",
   "version": "1.0.3",
   "description": "The Israel Queue implementation",
-  "type": "module",
   "main": "./lib/cjs/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -21,7 +20,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "build": "rm -rf ./lib && tsc --alwaysStrict -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "load-modules": "npm i --also-dev",
     "npm_login": "npm login --scope=@asmtechno --auth-type=legacy --registry=\"https://registry.npmjs.org\"",
     "publis_access": "npm publish --scope=@asmtechno --auth-type=legacy --access public --registry=\"https://registry.npmjs.org\"",
@@ -55,5 +54,8 @@
   "bugs": {
     "url": "https://github.com/stas7341/iq-lib.git/issues"
   },
-  "homepage": "https://github.com/stas7341/iq-lib#readme"
+  "homepage": "https://github.com/stas7341/iq-lib#readme",
+  "engines": {
+    "node": ">=18"
+  }
 }
