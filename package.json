@@ -23,7 +23,7 @@
     "build": "rm -rf ./lib && tsc --alwaysStrict -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "load-modules": "npm i --also-dev",
     "npm_login": "npm login --scope=@asmtechno --auth-type=legacy --registry=\"https://registry.npmjs.org\"",
-    "publis_access": "npm publish --scope=@asmtechno --auth-type=legacy --access public --registry=\"https://registry.npmjs.org\"",
+    "public_access": "npm publish --scope=@asmtechno --auth-type=legacy --access public --registry=\"https://registry.npmjs.org\"",
     "packaging": "npm run build && npm pack",
     "local_publish": "npm link"
   },
