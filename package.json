@@ -2,7 +2,7 @@
   "name": "@asmtechno/iqlib",
   "author": "Stas M.",
   "license": "ISC",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The Israel Queue implementation",
   "main": "./lib/cjs/index.js",
   "module": "./lib/index.js",
