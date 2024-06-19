@@ -1,4 +1,4 @@
-import {IRepoCommands} from "../interface/repoCommands";
+import {IRepoCommands, RepoCommandArgument} from "../interface/repoCommands";
 import {LogLevel, Message} from "@asmtechno/service-lib";
 import EventEmitter from "node:events";
 import {buildGroupName, GUID, PREFIX} from "../utils/iqHelper";
@@ -25,22 +25,28 @@ export class IQManager extends EventEmitter{
                 setTimeout(() => this.emit(eventName, metadata), 0);
         }
 
-        async createQueue(queueName: string, criteria: string[]) {
+        async createQueue(queueName: string, criteria: string[]): Promise<boolean> {
                 this.log("createQueue", LogLevel.trace, {queueName, criteria});
                 if(criteria?.length > 0) {
                         this.queues.set(queueName, criteria);
+                        return true;
                 }
                 else {
                         this.log('missing parameters of criteria', LogLevel.error, queueName);
+                        return false;
                 }
         }
 
-        async deleteQueue(queueName: string) {
+        async deleteQueue(queueName: string): Promise<boolean> {
                 this.log("deleteQueue", LogLevel.trace, queueName);
-                this.queues.delete(queueName);
+                return this.queues.delete(queueName);
         }
 
-        async addMessageToQueue(queueName: string, msg: Message) {
+        async addMessageToQueue(queueName: string, msg: Message): Promise<{
+                queueName: string,
+                groupName: string,
+                num: number
+        }> {
                 this.log("addMessageToQueue", LogLevel.trace, {queueName, msg});
                 const criteria = this.queues.get(queueName) || [];
                 const groupName = buildGroupName(msg, criteria);
@@ -53,6 +59,7 @@ export class IQManager extends EventEmitter{
                 await this.repoClient.setExpiration(fullQueueName, this.ttl);
                 // end critical section of queueName
                 this.raiseEvent('queued', {queueName, groupName, num});
+                return {queueName, groupName, num};
         }
 
         async getListGroupsFromQueue(queueName: string) {
