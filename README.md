@@ -18,9 +18,14 @@ Imagine that you need to organize your order delivery business so that at the ti
 
 2) Queuing. When we queue a new element, we iterate through all the groups in the queue. If the element being added to the queue is friends with an element in any group (friendship is a transitive relationship, so if it is friends with one, it is friends with everyone), the element will be added to the group and its priority will change, be added to the group's priority (the priority of a group is equal to the sum of its members).
 
-### Features
-
 ### Installation 📦
 
-### Start App
+npm install @asmtechno/iqlib
+
+### How to use
+[israel-queue-server](https://github.com/stas7341/israel-queue-server)
+
+#### reference Github:
+[service-lib](https://github.com/stas7341/service-lib)
+
 
