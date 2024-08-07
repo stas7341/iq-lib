@@ -98,6 +98,19 @@ export class IQManager extends EventEmitter{
                 return allMessages;
         }
 
+        async popupGroupFromQueue2(queueName: string) {
+                const fullQueueName = `${PREFIX('queue')}:${queueName}`;
+                this.log("popupGroupFromQueue2", LogLevel.trace, queueName);
+                // entering critical section queueName
+                const groupName = await this.repoClient.popItemFromZQ(fullQueueName, false);
+                if(!groupName)
+                        return;
+                const allMessages = await this.repoClient.getAllFieldsFromHash(groupName?.value);
+                await this.repoClient.deleteItem(groupName?.value);
+                // end critical section queueName
+                return {groupName: groupName?.value, allMessages};
+        }
+
 }
 
 export function createIQManager(options:{repoClient: IRepoCommands, ttl?: number, asyncLog?: boolean}): IQManager {
