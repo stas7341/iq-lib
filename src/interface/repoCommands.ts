@@ -30,7 +30,7 @@ export interface IRepoCommands {
 
     setExpiration(item: RepoCommandArgument, ttl: number, mode?: "NX" | "XX" | "GT" | "LT"): Promise<boolean>;
 
-    addFieldsToHash(...[key, value, fieldValue]: SingleFieldArguments | MultipleFieldsArguments): Promise<number>;
+    addFieldsToHash(...args: SingleFieldArguments | MultipleFieldsArguments): Promise<number>;
 
     removeFieldFromHash(key: RepoCommandArgument, field: RepoCommandArgument | Array<RepoCommandArgument>): Promise<number>;
 
@@ -38,9 +38,9 @@ export interface IRepoCommands {
 
     getFieldFromHash(key: RepoCommandArgument, field: RepoCommandArgument): Promise<RepoCommandArgument | null>;
 
-    getFieldsFromHash(key: RepoCommandArgument, fields: RepoCommandArgument | Array<RepoCommandArgument>): Promise<RepoCommandArgument[]>
+    getFieldsFromHash(key: RepoCommandArgument, fields: RepoCommandArgument | Array<RepoCommandArgument>): Promise<RepoCommandArgument[]>;
 
-    getAllFieldsFromHash(key: RepoCommandArgument): Promise<{ [p: string]: RepoCommandArgument}>
+    getAllFieldsFromHash(key: RepoCommandArgument): Promise<{ [p: string]: RepoCommandArgument }>;
 
     getFieldNamesFromHash(key: RepoCommandArgument): Promise<RepoCommandArgument[]>;
 

@@ -2,11 +2,23 @@
   "name": "@asmtechno/iqlib",
   "author": "Stas M.",
   "license": "ISC",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "The Israel Queue implementation",
   "main": "./lib/cjs/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      },
+      "require": {
+        "types": "./lib/cjs/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      }
+    }
+  },
   "files": [
     "lib/"
   ],
@@ -21,6 +33,9 @@
   },
   "scripts": {
     "build": "rm -rf ./lib && tsc --alwaysStrict -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "prepublishOnly": "npm run build && npm run test",
+    "test": "NODE_ENV=test jest --config=jest.config.ts",
+    "test:coverage": "NODE_ENV=test jest --config=jest.config.ts --coverage",
     "load-modules": "npm i --also-dev",
     "npm_login": "npm login --scope=@asmtechno --auth-type=legacy --registry=\"https://registry.npmjs.org\"",
     "public_access": "npm publish --scope=@asmtechno --auth-type=legacy --access public --registry=\"https://registry.npmjs.org\"",
@@ -34,10 +49,13 @@
     "auto-version-js": "^0.3.10"
   },
   "peerDependencies": {
-    "@asmtechno/service-lib": "^1.0.15"
+    "@asmtechno/service-lib": "^1.0.17"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.12.12",
+    "jest": "^30.5.0",
+    "ts-jest": "^29.4.12",
     "ts-node": "^10.9.2"
   },
   "repository": {
@@ -52,7 +70,7 @@
     "helper"
   ],
   "bugs": {
-    "url": "https://github.com/stas7341/iq-lib.git/issues"
+    "url": "https://github.com/stas7341/iq-lib/issues"
   },
   "homepage": "https://github.com/stas7341/iq-lib#readme",
   "engines": {
